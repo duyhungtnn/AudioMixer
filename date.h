@@ -5,8 +5,8 @@
  \brief Structure representant une date
  *****************************************************************/
 
-#ifndef __tp5__date__
-#define __tp5__date__
+#ifndef __DATE_H__
+#define __DATE_H__
 
 #include <stdio.h>
 #include <string>
@@ -22,4 +22,4 @@ void init(date_t &);
 void setDate(date_t &, int, int, int);
 std::string dateToString(date_t);
 
-#endif /* defined(__tp5__date__) */
+#endif /* defined(__DATE_H__) */

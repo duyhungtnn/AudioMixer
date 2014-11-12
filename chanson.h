@@ -14,7 +14,6 @@
 #include "vlc/vlc.h"
 #include "wav.h"
 
-// ***** Declaration de structures tmp ***** //
 struct chanson_t
 {
     string titre;

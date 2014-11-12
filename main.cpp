@@ -17,7 +17,7 @@ using namespace std;
 // Declaration des fonctions prototypes globales
 int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher);
 
-// ***** Declaration des commandes ***** //
+// ***** Declaration des commandes et constantes globales ***** //
 const string CMD_JOUER = "jouer";
 const string CMD_AJOUTER = "jouer";
 const string CMD_AFFICHER = "jouer";
@@ -47,7 +47,6 @@ int main()
     void ralentir(vector<chanson_t> &, float);
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
-    
     
     // Declaration des variables
     vector<chanson_t> chansons;
@@ -128,7 +127,7 @@ void init(vector<chanson_t> &chansons)
         // Generation de la date
         date_t date;
         init(date);
-
+        
         setDate(date, stoi(chansonsDates[i].substr(0,2)),
                 stoi(chansonsDates[i].substr(2,2)),
                 stoi(chansonsDates[i].substr(4,4)));
@@ -282,8 +281,6 @@ void karaoke(vector<chanson_t> &chansons)
     MusiqueWAV titre1;
     MusiqueWAV titre;
     
-    EchantillonStereo nouvelEchatillon;
-    
     // Obtention la chanson et le contenu musical
     indice = obtenirChanson(chansons, true);
     titre1 = lireChanson(chansons.at(indice).fichier);
@@ -298,19 +295,13 @@ void karaoke(vector<chanson_t> &chansons)
     
     titre = titre1;
     
-    // TODO : Corriger le traitement sur les echantillons
-    // Suppression de la voix sur la nouvelle chanson (Fonction 1)
-    // echantillons (gauche et droite) = (echantillon gauche − echantillon droite) / 2
+    // Suppression de la voix sur la nouvelle chanson
     // Generation des echantillons
     while(nbTraite < titre.tailleData / 4)
     {
-        nouvelEchatillon.gauche = (titre1.echantillon[nbTraite].gauche
-                                   - titre1.echantillon[nbTraite].droite) / 2;
         
-        nouvelEchatillon.droite = (titre1.echantillon[nbTraite].droite
-                                   - titre1.echantillon[nbTraite].gauche) / 2;
-        
-        titre.echantillon.push_back(nouvelEchatillon);
+        titre.echantillon[nbTraite].gauche = (titre1.echantillon[nbTraite].gauche - titre1.echantillon[nbTraite].droite) / 2;
+        titre.echantillon[nbTraite].droite = (titre1.echantillon[nbTraite].gauche - titre1.echantillon[nbTraite].droite) / 2;
         
         nbTraite++;
     }
