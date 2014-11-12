@@ -42,7 +42,7 @@ int main()
     void afficher(vector<chanson_t> &);
     void retirer(vector<chanson_t> &);
     void mixer(vector<chanson_t> &);
-    
+    void accelerer(vector<chanson_t> &, float);
     // Declarations des constantes
     
     // Declaration des variables
@@ -52,7 +52,10 @@ int main()
     init(chansons);
     
     // Mixage de deux chansons
-    mixer(chansons);
+    //mixer(chansons);
+    
+    // Acceleration d'une chanson
+    //accelerer(chansons, 3);
     
     // Suppression d'une chanson
     //retirer(chansons);
@@ -267,9 +270,28 @@ void echo()
  d'une chanson deja presente dans la liste en accelerant le rythme de
  la chanson.
  ----------------------------------------------------------------------- **/
-void accelerer()
+void accelerer(vector<chanson_t> &chansons, float facteur)
 {
-    // ...
+    int indice;
+    MusiqueWAV titre1, titre;
+    
+    // Obtenir la chanson et le contenu musical
+    indice = obtenirChanson(chansons, true);
+    titre1 = lireChanson(chansons.at(indice).fichier);
+    
+    // Creation de la nouvelle chanson
+    chansons.push_back(chansons.at(indice));
+    // Modification du nom de fichier de la chanson
+    chansons.back().fichier += "V" + recupererProchaineVersion(chansons.back().nbCopies);
+    // Mise a jout de l'attribut de la chanson
+    chansons.back().attribut = "accelere";
+    
+    titre = titre1;
+    titre.tauxEchantillon=int(titre.tauxEchantillon * facteur);
+    ecrireChanson(titre, chansons.back().fichier);
+    
+    // increment du nombre de version de la chanson originale
+    chansons.at(indice).nbCopies++;
 }
 
 /** ----------------------------------------------------------------------
