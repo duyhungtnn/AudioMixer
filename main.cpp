@@ -8,32 +8,11 @@
 #include <string>
 #include <vector>
 
+#include "chanson.h"
+#include "vlc/vlc.h"
+#include "wav.h"
+
 using namespace std;
-
-// ***** Declaration de structures tmp ***** //
-struct chanson_t
-{
-    string titre;
-    string interprete;
-    string attribut;
-};
-
-void init(chanson_t Chanson)
-{
-    Chanson.titre = "UnTitre";
-    Chanson.interprete = "UnInterprete";
-    Chanson.attribut = "UnAttribut";
-}
-
-string toString(chanson_t Chanson)
-{
-    
-    string toString = "Titre : " + Chanson.titre + "\n" +
-    "Interprete : " + Chanson.interprete + "\n" +
-    "Attribut : " + Chanson.attribut;
-    
-    return toString;
-}
 
 // ***** Declaration des commandes ***** //
 const string CMD_JOUER = "jouer";

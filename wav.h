@@ -33,6 +33,9 @@
 #define ENDIANESS "BIG"
 #endif
 
+#ifndef __MUSIQUEWAV_H__
+#define __MUSIQUEWAV_H__
+
 using namespace std;
 
 struct EchantillonStereo
@@ -64,4 +67,4 @@ void imprimerEntete(MusiqueWAV uneChanson);
 MusiqueWAV lireChanson(string nomFichier);
 void ecrireChanson(MusiqueWAV titre, string nomFichier);
 
-
+#endif /* defined(__MUSIQUEWAV_H__) */
