@@ -30,6 +30,7 @@ const string CMD_RALENTIR = "jouer";
 const string CMD_FIN = "jouer";
 const string OUI = "oui";
 const string NON = "non";
+const string SEPARATEUR_VERSION = "-V";
 
 /** ----------------------------------------------------------------------
  \brief Ce programme est le module principal. Il sert a modifier des
@@ -43,6 +44,7 @@ int main()
     void retirer(vector<chanson_t> &);
     void mixer(vector<chanson_t> &);
     void accelerer(vector<chanson_t> &, float);
+    void ralentir(vector<chanson_t> &, float);
     // Declarations des constantes
     
     // Declaration des variables
@@ -57,6 +59,9 @@ int main()
     // Acceleration d'une chanson
     //accelerer(chansons, 3);
     
+    // Deceleration d'une chanson
+    ralentir(chansons, 3);
+    
     // Suppression d'une chanson
     //retirer(chansons);
     
@@ -68,10 +73,10 @@ int main()
 
 /** ----------------------------------------------------------------------
  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
- Fonction d'initialisation pour les tests. non pertinent pour la remise 
+ Fonction d'initialisation pour les tests. non pertinent pour la remise
  finale!!
  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+ 
  \brief Ce programme est le module principal. Il sert a modifier des
  pistes audio
  ----------------------------------------------------------------------- **/
@@ -191,7 +196,7 @@ void mixer(vector<chanson_t> &chansons)
     MusiqueWAV titre1;
     MusiqueWAV titre2;
     MusiqueWAV titre;
-
+    
     unsigned int nbTraite = 0;
     EchantillonStereo nouvelEchatillon;
     
@@ -201,12 +206,14 @@ void mixer(vector<chanson_t> &chansons)
     titre2 = lireChanson(chansons.at(indice2).fichier);
     titre1 = lireChanson(chansons.at(indice1).fichier);
     
+    
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice1));
     // Modification du nom de fichier de la chanson
-    chansons.back().fichier += "-V" + recupererProchaineVersion(chansons.at(indice1).nbCopies);
+    chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.at(indice1).nbCopies);
     // Mise a jout de l'attribut de la chanson
-    chansons.back().attribut = "mixer";
+    chansons.back().attribut = CMD_MIXER;
+    
     
     titre = titre1;
     titre.echantillon.clear();
@@ -279,12 +286,14 @@ void accelerer(vector<chanson_t> &chansons, float facteur)
     indice = obtenirChanson(chansons, true);
     titre1 = lireChanson(chansons.at(indice).fichier);
     
+    
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));
     // Modification du nom de fichier de la chanson
-    chansons.back().fichier += "V" + recupererProchaineVersion(chansons.back().nbCopies);
+    chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.back().nbCopies);
     // Mise a jout de l'attribut de la chanson
-    chansons.back().attribut = "accelere";
+    chansons.back().attribut = CMD_ACCELERER;
+    
     
     titre = titre1;
     titre.tauxEchantillon=int(titre.tauxEchantillon * facteur);
@@ -298,19 +307,30 @@ void accelerer(vector<chanson_t> &chansons, float facteur)
  \brief Ce module permet de creer une nouvelle chanson a partir d'une
  chanson deja presente dans la liste en ralentissant le rythme de la chanson
  ----------------------------------------------------------------------- **/
-void ralentir(vector<chanson_t> &chansons, int indice)
+void ralentir(vector<chanson_t> &chansons, float facteur)
 {
-    // Obtenir la premiere chanson a manipuler (module obtenir chanson)
-    // Lire le contenu musical de la chanson (Module lireChanson)
-    // Creation de la nouvelle chanson dans la liste
-    // Copier les entrees de la chanson a ralentir
-    // Creer un nom de fichier (ajouter no de version a la fin)
-    // Modifier l'attribut (mettre "ralentir")
-    // Modifier le fichier de musique
-    // Modifier le taux d'echantillonnage (formule 1)
-    // ecrire le contenu musical dans le fichier (Module ecrireChanson)
-    // Adapter la taille de la liste
-    // Incrementer le nombre de version de la chanson originale
+    int indice;
+    MusiqueWAV titre1, titre;
+    
+    // Obtenir la chanson et le contenu musical
+    indice = obtenirChanson(chansons, true);
+    titre1 = lireChanson(chansons.at(indice).fichier);
+    
+    
+    // Creation de la nouvelle chanson
+    chansons.push_back(chansons.at(indice));
+    // Modification du nom de fichier de la chanson
+    chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.back().nbCopies);
+    // Mise a jout de l'attribut de la chanson
+    chansons.back().attribut = CMD_RALENTIR;
+    
+    
+    titre = titre1;
+    titre.tauxEchantillon=int(titre.tauxEchantillon / facteur);
+    ecrireChanson(titre, chansons.back().fichier);
+    
+    // increment du nombre de version de la chanson originale
+    chansons.at(indice).nbCopies++;
 }
 
 /** ----------------------------------------------------------------------
