@@ -46,6 +46,8 @@ int main()
     void accelerer(vector<chanson_t> &, float);
     void ralentir(vector<chanson_t> &, float);
     void echo(vector<chanson_t> &);
+    void karaoke(vector<chanson_t> &);
+    
     
     // Declaration des variables
     vector<chanson_t> chansons;
@@ -64,6 +66,9 @@ int main()
     
     // Ajout d'Echo sur une chanson
     //echo(chansons);
+    
+    // Conversion d'une chanson en mode Karaoke
+    //karaoke(chansons);
     
     // Suppression d'une chanson
     //retirer(chansons);
@@ -166,7 +171,7 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
     }
     
     cout << "Entrez le numero de la chanson choisie : ";
-    cin >> indice ;
+    cin >> indice;
     return indice;
 }
 
@@ -195,12 +200,12 @@ void mixer(vector<chanson_t> &chansons)
     // Declaration des variables
     int indice1;
     int indice2;
+    unsigned int nbTraite = 0;
     
     MusiqueWAV titre1;
     MusiqueWAV titre2;
     MusiqueWAV titre;
     
-    unsigned int nbTraite = 0;
     EchantillonStereo nouvelEchatillon;
     
     //Obtenir les chansons et le contenu musical
@@ -227,13 +232,13 @@ void mixer(vector<chanson_t> &chansons)
     }
     
     // Generation des echantillons
-    while(nbTraite < titre.tailleData/4)
+    while(nbTraite < titre.tailleData / 4)
     {
-        nouvelEchatillon.gauche = titre1.echantillon[nbTraite].gauche/2
-        + titre2.echantillon[nbTraite].gauche/2;
+        nouvelEchatillon.gauche = titre1.echantillon[nbTraite].gauche / 2
+        + titre2.echantillon[nbTraite].gauche / 2;
         
-        nouvelEchatillon.droite = titre1.echantillon[nbTraite].droite/2
-        + titre2.echantillon[nbTraite].droite/2;
+        nouvelEchatillon.droite = titre1.echantillon[nbTraite].droite / 2
+        + titre2.echantillon[nbTraite].droite / 2;
         
         titre.echantillon.push_back(nouvelEchatillon);
         
@@ -251,17 +256,55 @@ void mixer(vector<chanson_t> &chansons)
  \brief Cette operation permet de creer une nouvelle chanson a partir
  d'une chanson deja presente dans la liste en enlevant la voix.
  ----------------------------------------------------------------------- **/
-void karaoke(vector<chanson_t> &chansons, int indice)
+void karaoke(vector<chanson_t> &chansons)
 {
     // Declaration des fonctions prototypes
     void afficher(vector<chanson_t> &);
     
-    // Lecture du desir de l'utilisateur de voir la liste des chansons
-    // Si l'utilisateur desir voir la liste des chansons
-    // Affichage de la liste des chansons (Module Affichage)
-    // Lecture du du numero de chanson a retirer
-    // Ajout de la nouvelle chanson avec un numero de version (Module Ajouter)
+    int indice;
+    unsigned int nbTraite = 0;
+    
+    MusiqueWAV titre1;
+    MusiqueWAV titre;
+    
+    EchantillonStereo nouvelEchatillon;
+    
+    // Obtention la chanson et le contenu musical
+    indice = obtenirChanson(chansons, true);
+    titre1 = lireChanson(chansons.at(indice).fichier);
+    
+    
+    // Creation de la nouvelle chanson
+    chansons.push_back(chansons.at(indice));
+    // Modification du nom de fichier de la chanson
+    chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.back().nbCopies);
+    // Mise a jout de l'attribut de la chanson
+    chansons.back().attribut = CMD_ACCELERER;
+    
+    titre = titre1;
+    
+    // TODO : Corriger le traitement sur les echantillons
     // Suppression de la voix sur la nouvelle chanson (Fonction 1)
+    // echantillons (gauche et droite) = (echantillon gauche − echantillon droite) / 2
+    // Generation des echantillons
+    while(nbTraite < titre.tailleData / 4)
+    {
+        nouvelEchatillon.gauche = (titre1.echantillon[nbTraite].gauche
+                                   - titre1.echantillon[nbTraite].droite) / 2;
+        
+        nouvelEchatillon.droite = (titre1.echantillon[nbTraite].droite
+                                   - titre1.echantillon[nbTraite].gauche) / 2;
+        
+        titre.echantillon.push_back(nouvelEchatillon);
+        
+        nbTraite++;
+    }
+    
+    ecrireChanson(titre, chansons.back().fichier);
+    
+    // increment du nombre de version de la chanson originale
+    chansons.at(indice).nbCopies++;
+    
 }
 
 /** ----------------------------------------------------------------------
@@ -275,13 +318,14 @@ void echo(vector<chanson_t> &chansons)
     const int decalage = 10000;
     
     int indice;
-    MusiqueWAV titre1, titre;
+    MusiqueWAV titre1;
+    MusiqueWAV titre;
     unsigned int nbTraite = 0;
     
     // Obtention la chanson et le contenu musical
     indice = obtenirChanson(chansons, true);
     titre1 = lireChanson(chansons.at(indice).fichier);
-
+    
     
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));
@@ -290,19 +334,22 @@ void echo(vector<chanson_t> &chansons)
     // Mise a jout de l'attribut de la chanson
     chansons.back().attribut = CMD_ECHO;
     
-
+    
     titre = titre1;
-    while(nbTraite < titre.tailleData/4)
+    while(nbTraite < titre.tailleData / 4)
     {
         if (nbTraite > borneDacalage)
         {
-            titre.echantillon[nbTraite].gauche= titre1.echantillon[nbTraite].gauche + titre1.echantillon[nbTraite-decalage].gauche;
-            titre.echantillon[nbTraite].droite= titre1.echantillon[nbTraite].droite + titre1.echantillon[nbTraite-decalage].droite;
+            titre.echantillon[nbTraite].gauche = titre1.echantillon[nbTraite].gauche
+            + titre1.echantillon[nbTraite-decalage].gauche;
+            
+            titre.echantillon[nbTraite].droite = titre1.echantillon[nbTraite].droite
+            + titre1.echantillon[nbTraite-decalage].droite;
         }
         else
         {
-            titre.echantillon[nbTraite].gauche= titre1.echantillon[nbTraite].gauche ;
-            titre.echantillon[nbTraite].droite= titre1.echantillon[nbTraite].droite ;
+            titre.echantillon[nbTraite].gauche = titre1.echantillon[nbTraite].gauche;
+            titre.echantillon[nbTraite].droite = titre1.echantillon[nbTraite].droite;
         }
         nbTraite += 2;
     }
@@ -337,7 +384,7 @@ void accelerer(vector<chanson_t> &chansons, float facteur)
     
     
     titre = titre1;
-    titre.tauxEchantillon=int(titre.tauxEchantillon * facteur);
+    titre.tauxEchantillon = int(titre.tauxEchantillon * facteur);
     ecrireChanson(titre, chansons.back().fichier);
     
     // increment du nombre de version de la chanson originale
@@ -367,7 +414,7 @@ void ralentir(vector<chanson_t> &chansons, float facteur)
     
     
     titre = titre1;
-    titre.tauxEchantillon=int(titre.tauxEchantillon / facteur);
+    titre.tauxEchantillon = int(titre.tauxEchantillon / facteur);
     ecrireChanson(titre, chansons.back().fichier);
     
     // increment du nombre de version de la chanson originale
