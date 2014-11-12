@@ -1,5 +1,5 @@
 /** **************************************************************
- \file chanson.cpp
+ \file chanson.h
  \author Martin Rancourt - 140 59 412
  \author Frederic Poitras - 140 61 677
  \brief Fichier d'entete de la structure representant un chanson
