@@ -108,6 +108,10 @@ void init(vector<chanson_t> &chansons)
         "original",
         "original"
     };
+    string chansonsDates[NB_CHANSONS] = {
+        "03102014",
+        "14102014"
+    };
     
     chanson_t uneChanson;
     
@@ -119,6 +123,17 @@ void init(vector<chanson_t> &chansons)
         uneChanson.titre = chansonsTitres[i];
         uneChanson.interprete = chansonsInterpretes[i];
         uneChanson.attribut = chansonsAttributs[i];
+        uneChanson.originale = true;
+        
+        // Generation de la date
+        date_t date;
+        init(date);
+
+        setDate(date, stoi(chansonsDates[i].substr(0,2)),
+                stoi(chansonsDates[i].substr(2,2)),
+                stoi(chansonsDates[i].substr(4,4)));
+        
+        uneChanson.dateEnregistrement = date;
         
         // Ajout de la chansons
         chansons.push_back(uneChanson);

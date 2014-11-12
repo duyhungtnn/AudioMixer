@@ -10,21 +10,24 @@
 
 #include <stdio.h>
 
+#include "date.h"
 #include "vlc/vlc.h"
 #include "wav.h"
 
 // ***** Declaration de structures tmp ***** //
 struct chanson_t
 {
-    string fichier;
     string titre;
     string interprete;
+    string fichier;
     string attribut;
-    int nbCopies;
+    date_t dateEnregistrement;
     MusiqueWAV musiqueWav;
+    bool originale;
+    int nbCopies;
 };
 
-void init(chanson_t);
+void init(chanson_t &);
 string toString(chanson_t);
 string recupererProchaineVersion(int);
 

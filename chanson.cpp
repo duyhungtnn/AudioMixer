@@ -5,28 +5,45 @@
  \brief Structure representant un chanson
  *****************************************************************/
 
-#include "chanson.h"
+#include <ios>
 
-void init(chanson_t Chanson)
+#include "chanson.h"
+#include "date.h"
+
+void init(chanson_t &Chanson)
 {
-    Chanson.fichier = "";
-    Chanson.nbCopies = 0;
-    Chanson.titre = "UnTitre";
-    Chanson.interprete = "UnInterprete";
-    Chanson.attribut = "UnAttribut";
+
+    // Initialisation de la date
+    date_t date;
+    init(date);
     
+    // Initialisation des attributs
+    Chanson.titre = "";
+    Chanson.interprete = "";
+    Chanson.fichier = "";
+    Chanson.attribut = "";
+    Chanson.dateEnregistrement = date;
+    Chanson.originale = true;
+    Chanson.nbCopies = 0;
     Chanson.musiqueWav = MusiqueWAV();
 }
 
 string toString(chanson_t Chanson)
 {
     
+    const string OUI = "Oui";
+    const string NON = "Non";
+    
+    string originale = Chanson.originale ? OUI : NON;
+    
     string toString =
-    "Fichier : " + Chanson.fichier + "\n" +
     "Titre : " + Chanson.titre + "\n" +
-    "NbCopies : " + to_string(Chanson.nbCopies) + "\n" +
     "Interprete : " + Chanson.interprete + "\n" +
-    "Attribut : " + Chanson.attribut;
+    "Fichier : " + Chanson.fichier + "\n" +
+    "Date enr.: " + dateToString(Chanson.dateEnregistrement) + "\n" +
+    "NbCopies : " + to_string(Chanson.nbCopies) + "\n" +
+    "Attribut : " + Chanson.attribut + "\n"
+    "Originale : " + originale;
     
     return toString;
 }
