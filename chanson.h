@@ -16,13 +16,16 @@
 // ***** Declaration de structures tmp ***** //
 struct chanson_t
 {
+    string fichier;
     string titre;
     string interprete;
     string attribut;
+    int nbCopies;
     MusiqueWAV musiqueWav;
 };
 
 void init(chanson_t);
 string toString(chanson_t);
+string recupererProchaineVersion(int);
 
 #endif /* defined(__CHANSON_H__) */

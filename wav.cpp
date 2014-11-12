@@ -316,7 +316,7 @@ MusiqueWAV lireChanson(string nomFichier)
   \brief Fonction permettant d'ecrire une chanson dans un fichier wav
 
   \param[in]  laChanson : structure contant la chanson
-  \param[in]  nomFichier : nom du fichier contantn  la musique
+  \param[in]  nomFichier : nom du fichier contenant la musique
 -------------------------------------------------------------------------- **/
 void ecrireChanson(MusiqueWAV laChanson, string nomFichier)
 {

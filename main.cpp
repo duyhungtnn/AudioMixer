@@ -14,6 +14,9 @@
 
 using namespace std;
 
+// Declaration des fonctions prototypes globales
+int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher);
+
 // ***** Declaration des commandes ***** //
 const string CMD_JOUER = "jouer";
 const string CMD_AJOUTER = "jouer";
@@ -34,11 +37,11 @@ const string NON = "non";
  ----------------------------------------------------------------------- **/
 int main()
 {
-    
     // Declaration des fonctions prototype
-    void init(vector<chanson_t> &); // FONCTION TEMPORAIRE
+    void init(vector<chanson_t> &); // init temporaire pour les tests
     void afficher(vector<chanson_t> &);
     void retirer(vector<chanson_t> &);
+    void mixer(vector<chanson_t> &);
     
     // Declarations des constantes
     
@@ -48,40 +51,70 @@ int main()
     // Initialisation temporaire de la liste des chansons
     init(chansons);
     
-    retirer(chansons);
+    // Mixage de deux chansons
+    mixer(chansons);
     
+    // Suppression d'une chanson
+    //retirer(chansons);
+    
+    // Affichage de la liste
     afficher(chansons);
     
     return 0;
 }
 
-// FONCTION TEMPORAIRE INUTILE POUR LE TP!
+/** ----------------------------------------------------------------------
+ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ Fonction d'initialisation pour les tests. non pertinent pour la remise 
+ finale!!
+ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+ \brief Ce programme est le module principal. Il sert a modifier des
+ pistes audio
+ ----------------------------------------------------------------------- **/
 void init(vector<chanson_t> &chansons)
 {
-    const string alphanum = "abcdefghijklmnopqrstuvwxyz";
+    const int NB_CHANSONS = 2;
+    
+    string chansonsFichiers[NB_CHANSONS] = {
+        "mamakin.wav",
+        "trainkept.wav"
+    };
+    string chansonsTitres[NB_CHANSONS] = {
+        "Mama kin",
+        "Train Kept a Rollin'"
+    };
+    string chansonsInterpretes[NB_CHANSONS] = {
+        "Aerosmith",
+        "Aerosmith"
+    };
+    string chansonsAttributs[NB_CHANSONS] = {
+        "original",
+        "original"
+    };
+    
     chanson_t uneChanson;
     
-    // Genere i chansons random
-    for (int i = 0; i < 2; i++)
+    // Ajoute NB_CHANSONS a la liste de chansons
+    for (int i = 0; i < NB_CHANSONS; i++)
     {
-        for (int j = 0; j < 12; ++j)
-        {
-            uneChanson.titre = &alphanum[rand() % (26 - 1)];
-            uneChanson.interprete = &alphanum[rand() % (26 - 1)];
-            uneChanson.attribut = &alphanum[rand() % (26 - 1)];
-        }
+        // Creation de la chanson
+        uneChanson.fichier = chansonsFichiers[i];
+        uneChanson.titre = chansonsTitres[i];
+        uneChanson.interprete = chansonsInterpretes[i];
+        uneChanson.attribut = chansonsAttributs[i];
         
+        // Ajout de la chansons
         chansons.push_back(uneChanson);
     }
 }
 
 /** ----------------------------------------------------------------------
  \brief Ce module permet d'afficher la liste des chansons triees dans un
- ordrespecifie.
+ ordre specifie.
  ----------------------------------------------------------------------- **/
 void afficher(vector<chanson_t> &chansons)
 {
-    
     cout << "--------------------------------------- " << endl;
     cout << "-- L i s t e  d e s  c h a n s o n s --" << endl;
     cout << "--------------------------------------- " << endl;
@@ -95,12 +128,10 @@ void afficher(vector<chanson_t> &chansons)
         
         // Affichage des informations
         cout << toString(chansons.at(i)) << endl;
-        
     }
 }
 
 /** ----------------------------------------------------------------------
- FONCTION SEMI FOURNISE
  \brief Recupere et retourne une chanson parmi la liste des chansons
  ----------------------------------------------------------------------- **/
 int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
@@ -126,7 +157,6 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
     cout << "Entrez le numero de la chanson choisie : ";
     cin >> indice ;
     return indice;
-    
 }
 
 /** ----------------------------------------------------------------------
@@ -134,11 +164,6 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
  ----------------------------------------------------------------------- **/
 void retirer(vector<chanson_t> &chansons)
 {
-    
-    // Declaration des fonctions prototypes
-    int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher);
-    
-    
     // indice de la chanson a retirer
     int indice;
     
@@ -147,7 +172,6 @@ void retirer(vector<chanson_t> &chansons)
     
     // Suppression de la chanson de la liste
     chansons.erase(chansons.begin() + indice);
-    
 }
 
 /** ----------------------------------------------------------------------
@@ -155,9 +179,59 @@ void retirer(vector<chanson_t> &chansons)
  \brief Cette operation permet de creer (ajouter) une nouvelle chanson
  par le mixage de deux chansons deja presentes dans la liste
  ----------------------------------------------------------------------- **/
-void mixer()
+void mixer(vector<chanson_t> &chansons)
 {
-    // ...
+    // Declaration des variables
+    int indice1;
+    int indice2;
+    
+    MusiqueWAV titre1;
+    MusiqueWAV titre2;
+    MusiqueWAV titre;
+
+    unsigned int nbTraite = 0;
+    EchantillonStereo nouvelEchatillon;
+    
+    //Obtenir les chansons et le contenu musical
+    indice1 = obtenirChanson(chansons, true);
+    indice2 = obtenirChanson(chansons, false);
+    titre2 = lireChanson(chansons.at(indice2).fichier);
+    titre1 = lireChanson(chansons.at(indice1).fichier);
+    
+    // Creation de la nouvelle chanson
+    chansons.push_back(chansons.at(indice1));
+    // Modification du nom de fichier de la chanson
+    chansons.back().fichier += "-V" + recupererProchaineVersion(chansons.at(indice1).nbCopies);
+    // Mise a jout de l'attribut de la chanson
+    chansons.back().attribut = "mixer";
+    
+    titre = titre1;
+    titre.echantillon.clear();
+    
+    if (titre1.tailleData > titre2.tailleData)
+    {
+        titre.tailleData = titre2.tailleData;
+    }
+    
+    // Generation des echantillons
+    while(nbTraite < titre.tailleData/4)
+    {
+        nouvelEchatillon.gauche = titre1.echantillon[nbTraite].gauche/2
+        + titre2.echantillon[nbTraite].gauche/2;
+        
+        nouvelEchatillon.droite = titre1.echantillon[nbTraite].droite/2
+        + titre2.echantillon[nbTraite].droite/2;
+        
+        titre.echantillon.push_back(nouvelEchatillon);
+        
+        nbTraite++;
+    }
+    
+    // Enregistrement de la chanson dans un fichier WAV avec son nouveau nom
+    ecrireChanson(titre, chansons.back().fichier);
+    
+    // increment du nombre de version de la chanson originale
+    chansons.at(indice1).nbCopies++;
 }
 
 /** ----------------------------------------------------------------------
@@ -166,7 +240,6 @@ void mixer()
  ----------------------------------------------------------------------- **/
 void karaoke(vector<chanson_t> &chansons, int indice)
 {
-    
     // Declaration des fonctions prototypes
     void afficher(vector<chanson_t> &);
     
@@ -176,7 +249,6 @@ void karaoke(vector<chanson_t> &chansons, int indice)
     // Lecture du du numero de chanson a retirer
     // Ajout de la nouvelle chanson avec un numero de version (Module Ajouter)
     // Suppression de la voix sur la nouvelle chanson (Fonction 1)
-    
 }
 
 /** ----------------------------------------------------------------------
@@ -246,13 +318,11 @@ void trier(vector<chanson_t> &chansons)
  \brief Ce module permet de regrouper deux listes
  ----------------------------------------------------------------------- **/
 void regrouper(vector<chanson_t> &liste1, vector<chanson_t> &liste2, vector<chanson_t> &listeRegroupee) {
-    
     // → tant qu'une des listes n'est pas vide
     // → on compare les elements courants des deux listes
     // → on choisit le plus petit element
     // → on le copie dans la liste de sortie
     // → on avance dans la liste contenant le plus petit element
     // → on copie les elements restant de la liste non vide dans la liste de sortie pour obtenir une liste triee
-    
 }
 

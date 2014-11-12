@@ -9,18 +9,29 @@
 
 void init(chanson_t Chanson)
 {
+    Chanson.fichier = "";
+    Chanson.nbCopies = 0;
     Chanson.titre = "UnTitre";
     Chanson.interprete = "UnInterprete";
     Chanson.attribut = "UnAttribut";
+    
     Chanson.musiqueWav = MusiqueWAV();
 }
 
 string toString(chanson_t Chanson)
 {
     
-    string toString = "Titre : " + Chanson.titre + "\n" +
+    string toString =
+    "Fichier : " + Chanson.fichier + "\n" +
+    "Titre : " + Chanson.titre + "\n" +
+    "NbCopies : " + to_string(Chanson.nbCopies) + "\n" +
     "Interprete : " + Chanson.interprete + "\n" +
     "Attribut : " + Chanson.attribut;
     
     return toString;
+}
+
+string recupererProchaineVersion(int nbCopies)
+{
+    return to_string(++nbCopies);
 }
