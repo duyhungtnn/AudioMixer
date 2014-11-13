@@ -47,7 +47,7 @@ int main()
     void ralentir(vector<chanson_t> &, float);
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
-    void trier(vector<chanson_t> &);
+    void trier(vector<chanson_t>);
     
     // Declaration des variables
     vector<chanson_t> chansons;
@@ -57,56 +57,85 @@ int main()
     init(chansons);
     
     // Lecture de la commande de l'utilisateur
-    cout << "Veuileez entrer une commande a executer : ";
+    cout << "Veuilez entrer une commande a executer : ";
     cin >> commande;
     
     while (commande != CMD_FIN) {
+        // Lecteur d'une chanson
         if (commande == CMD_JOUER)
         {
+            // Declaration des variables
+            string nomFicher;
+            int duree;
             
+            // Lecture des informations
+            cout << "Veuillez entrer le nom du fichier : ";
+            cin >> nomFicher;
+            
+            cout << "Veuillez entrer la duree de lecture : ";
+            cin >> duree;
+            
+            // Lecture de la chanson
+            jouerMusique(nomFicher, duree);
         }
+        // Affichage de la liste
         else if (commande == CMD_AFFICHER)
         {
-            // Affichage de la liste
             afficher(chansons);
         }
+        // Ajout d'une chanson a la liste
         else if (commande == CMD_AJOUTER)
         {
-            // Ajout d'une chanson a la liste
         }
+        // Suppression d'une chanson
         else if (commande == CMD_RETIRER)
         {
-            // Suppression d'une chanson
             retirer(chansons);
         }
+        // Mixage de deux chansons
         else if (commande == CMD_MIXER)
         {
-            // Mixage de deux chansons
             mixer(chansons);
         }
+        // Acceleration d'une chanson
         else if (commande == CMD_ACCELERER)
         {
-            // Acceleration d'une chanson
-            ralentir(chansons, 3);
+            // Declaration des variables
+            int facteur;
+            
+            // Lecture des informations
+            cout << "Veuillez entrer le facteur d'acceleration : ";
+            cin >> facteur;
+            
+            // Acceleration de la vitesse de la chanson selon le facteur
+            accelerer(chansons, facteur);
         }
+        // Deceleration d'une chanson
         else if (commande == CMD_RALENTIR)
         {
-            // Deceleration d'une chanson
-            ralentir(chansons, 3);
+            // Declaration des variables
+            int facteur;
+            
+            // Lecture des informations
+            cout << "Veuillez entrer le facteur de decelaration : ";
+            cin >> facteur;
+            
+            // Deceleration de la vitesse de la chanson selon le facteur
+            ralentir(chansons, facteur);
         }
+        // Ajout d'Echo sur une chanson
         else if (commande == CMD_ECHO)
         {
-            // Ajout d'Echo sur une chanson
             echo(chansons);
         }
+        // Conversion d'une chanson en mode Karaoke
         else if (commande == CMD_KARAOKE)
         {
-            // Conversion d'une chanson en mode Karaoke
             karaoke(chansons);
         }
+        // Commande invalide
         else
         {
-            // Commande invalide
             cout << "La commande entree est invalide." << endl;
         }
         
@@ -473,10 +502,10 @@ void ralentir(vector<chanson_t> &chansons, float facteur)
  \brief Ce module permet de trier la liste des chansons dans un ordre
  specifie.
  ----------------------------------------------------------------------- **/
-void trier(vector<chanson_t> &chansons)
+void trier(vector<chanson_t> chansons)
 {
     // Declaration des fonctions prototypes
-    void regrouper(vector<chanson_t> &, vector<chanson_t> &, vector<chanson_t> &);
+    void regrouper(vector<chanson_t>, vector<chanson_t>, vector<chanson_t> &);
     
     // Declaration des constantes
     const int LONGEUR_MINIMALE = 1;
@@ -509,7 +538,7 @@ void trier(vector<chanson_t> &chansons)
 /** ----------------------------------------------------------------------
  \brief Ce module permet de regrouper deux listes
  ----------------------------------------------------------------------- **/
-void regrouper(vector<chanson_t> &liste1, vector<chanson_t> &liste2, vector<chanson_t> &listeRegroupee) {
+void regrouper(vector<chanson_t> liste1, vector<chanson_t> liste2, vector<chanson_t> &listeRegroupee) {
     
     void afficher(vector<chanson_t> &);
     
