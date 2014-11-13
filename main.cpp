@@ -18,16 +18,11 @@ using namespace std;
 int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher);
 
 // ***** Declaration des commandes et constantes globales ***** //
-const string CMD_JOUER = "jouer";
-const string CMD_AJOUTER = "ajouter";
-const string CMD_AFFICHER = "afficher";
-const string CMD_RETIRER = "retirer";
 const string CMD_MIXER = "mixer";
 const string CMD_KARAOKE = "karaoke";
 const string CMD_ECHO = "echo";
 const string CMD_ACCELERER = "accelerer";
 const string CMD_RALENTIR = "ralentir";
-const string CMD_FIN = "fin";
 const string SEPARATEUR_VERSION = "-V";
 
 /** ----------------------------------------------------------------------
@@ -46,6 +41,14 @@ int main()
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
     void trier(vector<chanson_t>, string);
+    
+    // Declaration des constantes
+    const string CMD_FIN = "fin";
+    const string CMD_JOUER = "jouer";
+    const string CMD_AJOUTER = "ajouter";
+    const string CMD_RETIRER = "retirer";
+    const string CMD_AFFICHER = "afficher";
+    
     
     // Declaration des variables
     vector<chanson_t> chansons;
