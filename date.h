@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <string>
 
+using namespace std;
+
 struct date_t
 {
     int jour;
@@ -20,6 +22,6 @@ struct date_t
 
 void init(date_t &);
 void setDate(date_t &, int, int, int);
-std::string dateToString(date_t);
+string dateToString(date_t);
 
 #endif /* defined(__DATE_H__) */

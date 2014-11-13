@@ -24,12 +24,10 @@ const string CMD_AFFICHER = "afficher";
 const string CMD_RETIRER = "retirer";
 const string CMD_MIXER = "mixer";
 const string CMD_KARAOKE = "karaoke";
-const string CMD_ECHO = "jecho";
+const string CMD_ECHO = "echo";
 const string CMD_ACCELERER = "accelerer";
 const string CMD_RALENTIR = "ralentir";
 const string CMD_FIN = "fin";
-const string OUI = "oui";
-const string NON = "non";
 const string SEPARATEUR_VERSION = "-V";
 
 /** ----------------------------------------------------------------------
@@ -47,7 +45,7 @@ int main()
     void ralentir(vector<chanson_t> &, float);
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
-    void trier(vector<chanson_t>);
+    void trier(vector<chanson_t>, string);
     
     // Declaration des variables
     vector<chanson_t> chansons;
@@ -140,7 +138,7 @@ int main()
         }
         
         // Lecture de la commande de l'utilisateur
-        cout << "Veuileez entrer une commande a executer : ";
+        cout << "Veuilez entrer une commande a executer : ";
         cin >> commande;
         
     }
@@ -216,9 +214,16 @@ void init(vector<chanson_t> &chansons)
  ----------------------------------------------------------------------- **/
 void afficher(vector<chanson_t> &chansons)
 {
+    
+    const string TRI_TITRE = "titre";
+    const string TRI_INTERPRETE = "interprete";
+    
     cout << "--------------------------------------- " << endl;
     cout << "-- L i s t e  d e s  c h a n s o n s --" << endl;
     cout << "--------------------------------------- " << endl;
+    
+    // Est-ce que l'utilisateur veut trier la liste
+    // Critere de tri
     
     // Pour chaque chanson
     for (int i = 0; i < chansons.size(); i++)
@@ -239,6 +244,9 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
 {
     // Declaration des fonctions prototypes
     void afficher(vector<chanson_t> &chansons);
+ 
+    const string OUI = "oui";
+    const string NON = "non";
     
     string reponse;
     int indice;
@@ -363,6 +371,7 @@ void karaoke(vector<chanson_t> &chansons)
     chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.back().nbCopies);
     // Mise a jout de l'attribut de la chanson
     chansons.back().attribut = CMD_ACCELERER;
+    
     
     titre = titre1;
     
@@ -502,7 +511,7 @@ void ralentir(vector<chanson_t> &chansons, float facteur)
  \brief Ce module permet de trier la liste des chansons dans un ordre
  specifie.
  ----------------------------------------------------------------------- **/
-void trier(vector<chanson_t> chansons)
+void trier(vector<chanson_t> chansons, string critereTri)
 {
     // Declaration des fonctions prototypes
     void regrouper(vector<chanson_t>, vector<chanson_t>, vector<chanson_t> &);
@@ -524,9 +533,9 @@ void trier(vector<chanson_t> chansons)
         vector<chanson_t> liste2(chansons.begin() + pivot, chansons.end());
         
         // tri fusion recursif sut la premiere liste
-        trier(liste1);
+        trier(liste1, critereTri);
         // tri fusion recursif sur la deuxieme liste
-        trier(liste2);
+        trier(liste2, critereTri);
         
         // regroupement des deux listes
         regrouper(liste1, liste2, listeSortie);
