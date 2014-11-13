@@ -10,6 +10,8 @@
 #include "chanson.h"
 #include "date.h"
 
+using namespace std;
+
 void init(chanson_t &Chanson)
 {
 
