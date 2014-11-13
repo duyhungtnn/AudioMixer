@@ -19,15 +19,15 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher);
 
 // ***** Declaration des commandes et constantes globales ***** //
 const string CMD_JOUER = "jouer";
-const string CMD_AJOUTER = "jouer";
-const string CMD_AFFICHER = "jouer";
-const string CMD_RETIRER = "jouer";
-const string CMD_MIXER = "jouer";
-const string CMD_KARAOKE = "jouer";
-const string CMD_ECHO = "jouer";
-const string CMD_ACCELERER = "jouer";
-const string CMD_RALENTIR = "jouer";
-const string CMD_FIN = "jouer";
+const string CMD_AJOUTER = "ajouter";
+const string CMD_AFFICHER = "afficher";
+const string CMD_RETIRER = "retirer";
+const string CMD_MIXER = "mixer";
+const string CMD_KARAOKE = "karaoke";
+const string CMD_ECHO = "jecho";
+const string CMD_ACCELERER = "accelerer";
+const string CMD_RALENTIR = "ralentir";
+const string CMD_FIN = "fin";
 const string OUI = "oui";
 const string NON = "non";
 const string SEPARATEUR_VERSION = "-V";
@@ -47,33 +47,74 @@ int main()
     void ralentir(vector<chanson_t> &, float);
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
+    void trier(vector<chanson_t> &);
     
     // Declaration des variables
     vector<chanson_t> chansons;
+    string commande;
     
     // Initialisation temporaire de la liste des chansons
     init(chansons);
     
-    // Mixage de deux chansons
-    //mixer(chansons);
+    // Lecture de la commande de l'utilisateur
+    cout << "Veuileez entrer une commande a executer : ";
+    cin >> commande;
     
-    // Acceleration d'une chanson
-    //accelerer(chansons, 3);
-    
-    // Deceleration d'une chanson
-    //ralentir(chansons, 3);
-    
-    // Ajout d'Echo sur une chanson
-    //echo(chansons);
-    
-    // Conversion d'une chanson en mode Karaoke
-    //karaoke(chansons);
-    
-    // Suppression d'une chanson
-    //retirer(chansons);
-    
-    // Affichage de la liste
-    afficher(chansons);
+    while (commande != CMD_FIN) {
+        if (commande == CMD_JOUER)
+        {
+            
+        }
+        else if (commande == CMD_AFFICHER)
+        {
+            // Affichage de la liste
+            afficher(chansons);
+        }
+        else if (commande == CMD_AJOUTER)
+        {
+            // Ajout d'une chanson a la liste
+        }
+        else if (commande == CMD_RETIRER)
+        {
+            // Suppression d'une chanson
+            retirer(chansons);
+        }
+        else if (commande == CMD_MIXER)
+        {
+            // Mixage de deux chansons
+            mixer(chansons);
+        }
+        else if (commande == CMD_ACCELERER)
+        {
+            // Acceleration d'une chanson
+            ralentir(chansons, 3);
+        }
+        else if (commande == CMD_RALENTIR)
+        {
+            // Deceleration d'une chanson
+            ralentir(chansons, 3);
+        }
+        else if (commande == CMD_ECHO)
+        {
+            // Ajout d'Echo sur une chanson
+            echo(chansons);
+        }
+        else if (commande == CMD_KARAOKE)
+        {
+            // Conversion d'une chanson en mode Karaoke
+            karaoke(chansons);
+        }
+        else
+        {
+            // Commande invalide
+            cout << "La commande entree est invalide." << endl;
+        }
+        
+        // Lecture de la commande de l'utilisateur
+        cout << "Veuileez entrer une commande a executer : ";
+        cin >> commande;
+        
+    }
     
     return 0;
 }
@@ -104,8 +145,8 @@ void init(vector<chanson_t> &chansons)
         "Aerosmith"
     };
     string chansonsAttributs[NB_CHANSONS] = {
-        "original",
-        "original"
+        "1",
+        "2"
     };
     string chansonsDates[NB_CHANSONS] = {
         "03102014",
@@ -133,6 +174,7 @@ void init(vector<chanson_t> &chansons)
                 stoi(chansonsDates[i].substr(4,4)));
         
         uneChanson.dateEnregistrement = date;
+        uneChanson.nbCopies = 0;
         
         // Ajout de la chansons
         chansons.push_back(uneChanson);
@@ -434,31 +476,76 @@ void ralentir(vector<chanson_t> &chansons, float facteur)
 void trier(vector<chanson_t> &chansons)
 {
     // Declaration des fonctions prototypes
-    void regrouper(vector<chanson_t> &liste1, vector<chanson_t> &liste2, vector<chanson_t> &listeRegroupee);
+    void regrouper(vector<chanson_t> &, vector<chanson_t> &, vector<chanson_t> &);
     
     // Declaration des constantes
     const int LONGEUR_MINIMALE = 1;
     
+    // Declaration des variables
+    size_t pivot;
+    vector<chanson_t> listeSortie;
     
     // si longueur > 1
     if (chansons.size() > LONGEUR_MINIMALE)
     {
         // trouve le milieu de la liste pour creer deux listes, liste1 et liste2, de longueur lg1 et lg2
-        // tri_fusion(liste1, lg1)
-        // tri_fusion(liste2, lg2)
-        // regroupe(liste1, liste2, lg1, lg2, liste_sortie)
+        pivot = chansons.size() / 2;
+        
+        vector<chanson_t> liste1(chansons.begin(), chansons.begin() + pivot);
+        vector<chanson_t> liste2(chansons.begin() + pivot, chansons.end());
+        
+        // tri fusion recursif sut la premiere liste
+        trier(liste1);
+        // tri fusion recursif sur la deuxieme liste
+        trier(liste2);
+        
+        // regroupement des deux listes
+        regrouper(liste1, liste2, listeSortie);
     }
+    
+    chansons = listeSortie;
 }
 
 /** ----------------------------------------------------------------------
  \brief Ce module permet de regrouper deux listes
  ----------------------------------------------------------------------- **/
 void regrouper(vector<chanson_t> &liste1, vector<chanson_t> &liste2, vector<chanson_t> &listeRegroupee) {
+    
+    void afficher(vector<chanson_t> &);
+    
     // → tant qu'une des listes n'est pas vide
-    // → on compare les elements courants des deux listes
-    // → on choisit le plus petit element
-    // → on le copie dans la liste de sortie
-    // → on avance dans la liste contenant le plus petit element
+    while ( liste1.size() > 0 && liste2.size() > 0 )
+    {
+        // → on compare les elements courants des deux listes
+        // → on choisit le plus petit element
+        // → on le copie dans la liste de sortie
+        if ( liste1.front().attribut > liste2.front().attribut )
+        {
+            listeRegroupee.push_back(liste1.front());
+            liste1.erase(liste1.begin()); // → on avance dans la liste contenant le plus petit element
+        }
+        else
+        {
+            listeRegroupee.push_back(liste2.front());
+            liste2.erase(liste2.begin()); // → on avance dans la liste contenant le plus petit element
+        }
+    }
+    
     // → on copie les elements restant de la liste non vide dans la liste de sortie pour obtenir une liste triee
+    if (liste1.size() > 0)
+    {
+        for (int i = 0; i < liste1.size(); i++)
+        {
+            listeRegroupee.push_back(liste1.front());
+            liste1.erase(liste1.begin());
+        }
+    }
+    else if (liste2.size() > 0)
+    {
+        for (int i = 0; i < liste2.size(); i++)
+        {
+            listeRegroupee.push_back(liste2.front());
+            liste2.erase(liste2.begin());
+        }
+    }
 }
-
