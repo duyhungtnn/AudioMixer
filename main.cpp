@@ -2,6 +2,18 @@
  \file tp5.cpp
  \author Martin Rancourt - 140 59 412
  \author Frederic Poitras - 140 61 677
+ \brief Programme pour gerer une liste de chansons et pour generer de nouvelles
+ chansons par la manipulation de chansons deja presentes dans la liste. Cette
+ liste de chansons est manipulee grâce aux operations suivantes
+ - Ajout («ajouter»)
+ - Destruction («retirer»)
+ - Affichage («afficher»)
+ - Mixage de deux chansons («mixer»)
+ - Effacement de la voix («karaoke»)
+ - Ajout echo («echo»)
+ - Acceleration («accelerer»)
+ - Ralentissement («ralentir»).
+ - Terminer «fin» permet de terminer l'execution du programme.
  *****************************************************************/
 
 #include <iostream>
@@ -17,13 +29,17 @@ using namespace std;
 // Declaration des fonctions prototypes globales
 int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher);
 
-// ***** Declaration des commandes et constantes globales ***** //
+// Declaration des commandes et constantes globales
 const string CMD_MIXER = "mixer";
 const string CMD_KARAOKE = "karaoke";
 const string CMD_ECHO = "echo";
 const string CMD_ACCELERER = "accelerer";
 const string CMD_RALENTIR = "ralentir";
 const string SEPARATEUR_VERSION = "-V";
+const string TITRE = "titre";
+const string INTERPRETE = "interprete";
+const string OUI = "oui";
+const string NON = "non";
 
 /** ----------------------------------------------------------------------
  \brief Ce programme est le module principal. Il sert a modifier des
@@ -36,8 +52,8 @@ int main()
     void afficher(vector<chanson_t> &);
     void retirer(vector<chanson_t> &);
     void mixer(vector<chanson_t> &);
-    void accelerer(vector<chanson_t> &, float);
-    void ralentir(vector<chanson_t> &, float);
+    void accelerer(vector<chanson_t> &);
+    void ralentir(vector<chanson_t> &);
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
     void trier(vector<chanson_t>, string);
@@ -48,7 +64,6 @@ int main()
     const string CMD_AJOUTER = "ajouter";
     const string CMD_RETIRER = "retirer";
     const string CMD_AFFICHER = "afficher";
-    
     
     // Declaration des variables
     vector<chanson_t> chansons;
@@ -101,28 +116,14 @@ int main()
         // Acceleration d'une chanson
         else if (commande == CMD_ACCELERER)
         {
-            // Declaration des variables
-            int facteur;
-            
-            // Lecture des informations
-            cout << "Veuillez entrer le facteur d'acceleration : ";
-            cin >> facteur;
-            
             // Acceleration de la vitesse de la chanson selon le facteur
-            accelerer(chansons, facteur);
+            accelerer(chansons);
         }
         // Deceleration d'une chanson
         else if (commande == CMD_RALENTIR)
         {
-            // Declaration des variables
-            int facteur;
-            
-            // Lecture des informations
-            cout << "Veuillez entrer le facteur de decelaration : ";
-            cin >> facteur;
-            
             // Deceleration de la vitesse de la chanson selon le facteur
-            ralentir(chansons, facteur);
+            ralentir(chansons);
         }
         // Ajout d'Echo sur une chanson
         else if (commande == CMD_ECHO)
@@ -217,16 +218,31 @@ void init(vector<chanson_t> &chansons)
  ----------------------------------------------------------------------- **/
 void afficher(vector<chanson_t> &chansons)
 {
+    // Declaration des fonctions prototypes
+    void trier(vector<chanson_t> &, string);
     
-    const string TRI_TITRE = "titre";
-    const string TRI_INTERPRETE = "interprete";
+    // Declaration des vaariables
+    bool veuxTrier;
+    string critereTri;
     
     cout << "--------------------------------------- " << endl;
     cout << "-- L i s t e  d e s  c h a n s o n s --" << endl;
     cout << "--------------------------------------- " << endl;
     
     // Est-ce que l'utilisateur veut trier la liste
-    // Critere de tri
+    cout << "Voulez-vous trier la liste ? [" + OUI + "/" + NON + "]";
+    cin >> veuxTrier;
+    
+    // L'utilisateur veux trier la liste
+    if (veuxTrier)
+    {
+        // Critere de tri
+        cout << "Dans quel ordre voulez-vous trier la liste ? [" + TITRE + "/" + INTERPRETE + "]";
+        cin >> critereTri;
+        
+        // Tri de la liste
+        trier(chansons, critereTri);
+    }
     
     // Pour chaque chanson
     for (int i = 0; i < chansons.size(); i++)
@@ -247,18 +263,19 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
 {
     // Declaration des fonctions prototypes
     void afficher(vector<chanson_t> &chansons);
- 
-    const string OUI = "oui";
-    const string NON = "non";
     
+    // Declaration des variables
     string reponse;
     int indice;
     
+    // Si parametre veuxAfficher est a vrai, on demande a l'utilisateur s'il veux
+    // voir la liste des chanons
     if (veuxAfficher)
     {
         cout << "Souhaitez-vous voir la liste des chansons ? [" + OUI + "/" + NON + "] ";
         cin >> reponse;
         
+        // Lutilisateur veux voir la liste de chansons
         if (reponse == OUI)
         {
             // Affichage de la liste des chansons
@@ -266,8 +283,10 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
         }
     }
     
+    // Obtention de l'indice de la chanson
     cout << "Entrez le numero de la chanson choisie : ";
     cin >> indice;
+    
     return indice;
 }
 
@@ -297,11 +316,9 @@ void mixer(vector<chanson_t> &chansons)
     int indice1;
     int indice2;
     unsigned int nbTraite = 0;
-    
+    MusiqueWAV titre;
     MusiqueWAV titre1;
     MusiqueWAV titre2;
-    MusiqueWAV titre;
-    
     EchantillonStereo nouvelEchatillon;
     
     //Obtenir les chansons et le contenu musical
@@ -310,14 +327,12 @@ void mixer(vector<chanson_t> &chansons)
     titre2 = lireChanson(chansons.at(indice2).fichier);
     titre1 = lireChanson(chansons.at(indice1).fichier);
     
-    
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice1));
     // Modification du nom de fichier de la chanson
     chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.at(indice1).nbCopies);
     // Mise a jout de l'attribut de la chanson
     chansons.back().attribut = CMD_MIXER;
-    
     
     titre = titre1;
     titre.echantillon.clear();
@@ -357,16 +372,15 @@ void karaoke(vector<chanson_t> &chansons)
     // Declaration des fonctions prototypes
     void afficher(vector<chanson_t> &);
     
+    // Declaration des variables
     int indice;
     unsigned int nbTraite = 0;
-    
-    MusiqueWAV titre1;
     MusiqueWAV titre;
+    MusiqueWAV titre1;
     
     // Obtention la chanson et le contenu musical
     indice = obtenirChanson(chansons, true);
     titre1 = lireChanson(chansons.at(indice).fichier);
-    
     
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));
@@ -375,7 +389,6 @@ void karaoke(vector<chanson_t> &chansons)
     // Mise a jout de l'attribut de la chanson
     chansons.back().attribut = CMD_ACCELERER;
     
-    
     titre = titre1;
     
     // Suppression de la voix sur la nouvelle chanson
@@ -383,8 +396,10 @@ void karaoke(vector<chanson_t> &chansons)
     while(nbTraite < titre.tailleData / 4)
     {
         
-        titre.echantillon[nbTraite].gauche = (titre1.echantillon[nbTraite].gauche - titre1.echantillon[nbTraite].droite) / 2;
-        titre.echantillon[nbTraite].droite = (titre1.echantillon[nbTraite].gauche - titre1.echantillon[nbTraite].droite) / 2;
+        titre.echantillon[nbTraite].gauche = (titre1.echantillon[nbTraite].gauche
+                                              - titre1.echantillon[nbTraite].droite) / 2;
+        titre.echantillon[nbTraite].droite = (titre1.echantillon[nbTraite].gauche
+                                              - titre1.echantillon[nbTraite].droite) / 2;
         
         nbTraite++;
     }
@@ -403,18 +418,19 @@ void karaoke(vector<chanson_t> &chansons)
  ----------------------------------------------------------------------- **/
 void echo(vector<chanson_t> &chansons)
 {
+    // Declaration des constantes
     const int borneDacalage = 10050;
     const int decalage = 10000;
     
+    // Declaration des variables
     int indice;
-    MusiqueWAV titre1;
     MusiqueWAV titre;
+    MusiqueWAV titre1;
     unsigned int nbTraite = 0;
     
     // Obtention la chanson et le contenu musical
     indice = obtenirChanson(chansons, true);
     titre1 = lireChanson(chansons.at(indice).fichier);
-    
     
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));
@@ -422,7 +438,6 @@ void echo(vector<chanson_t> &chansons)
     chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.back().nbCopies);
     // Mise a jout de l'attribut de la chanson
     chansons.back().attribut = CMD_ECHO;
-    
     
     titre = titre1;
     while(nbTraite < titre.tailleData / 4)
@@ -454,15 +469,21 @@ void echo(vector<chanson_t> &chansons)
  d'une chanson deja presente dans la liste en accelerant le rythme de
  la chanson.
  ----------------------------------------------------------------------- **/
-void accelerer(vector<chanson_t> &chansons, float facteur)
+void accelerer(vector<chanson_t> &chansons)
 {
+    // Declaration des variables
+    int facteur;
     int indice;
-    MusiqueWAV titre1, titre;
+    MusiqueWAV titre;
+    MusiqueWAV titre1;
     
     // Obtention la chanson et le contenu musical
     indice = obtenirChanson(chansons, true);
     titre1 = lireChanson(chansons.at(indice).fichier);
     
+    // Lecture du facteur d'acceleration
+    cout << "Veuillez entrer le facteur d'acceleration : ";
+    cin >> facteur;
     
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));
@@ -470,7 +491,6 @@ void accelerer(vector<chanson_t> &chansons, float facteur)
     chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.back().nbCopies);
     // Mise a jout de l'attribut de la chanson
     chansons.back().attribut = CMD_ACCELERER;
-    
     
     titre = titre1;
     titre.tauxEchantillon = int(titre.tauxEchantillon * facteur);
@@ -484,15 +504,21 @@ void accelerer(vector<chanson_t> &chansons, float facteur)
  \brief Ce module permet de creer une nouvelle chanson a partir d'une
  chanson deja presente dans la liste en ralentissant le rythme de la chanson
  ----------------------------------------------------------------------- **/
-void ralentir(vector<chanson_t> &chansons, float facteur)
+void ralentir(vector<chanson_t> &chansons)
 {
+    // Declaration des variables
+    int facteur;
     int indice;
-    MusiqueWAV titre1, titre;
+    MusiqueWAV titre;
+    MusiqueWAV titre1;
     
     // Obtention la chanson et le contenu musical
     indice = obtenirChanson(chansons, true);
     titre1 = lireChanson(chansons.at(indice).fichier);
     
+    // Lecture du facteur d'acceleration
+    cout << "Veuillez entrer le facteur de ralentissement : ";
+    cin >> facteur;
     
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));
@@ -500,7 +526,6 @@ void ralentir(vector<chanson_t> &chansons, float facteur)
     chansons.back().fichier += SEPARATEUR_VERSION + recupererProchaineVersion(chansons.back().nbCopies);
     // Mise a jout de l'attribut de la chanson
     chansons.back().attribut = CMD_RALENTIR;
-    
     
     titre = titre1;
     titre.tauxEchantillon = int(titre.tauxEchantillon / facteur);
@@ -514,7 +539,7 @@ void ralentir(vector<chanson_t> &chansons, float facteur)
  \brief Ce module permet de trier la liste des chansons dans un ordre
  specifie.
  ----------------------------------------------------------------------- **/
-void trier(vector<chanson_t> chansons, string critereTri)
+void trier(vector<chanson_t> &chansons, string critereTri)
 {
     // Declaration des fonctions prototypes
     void regrouper(vector<chanson_t>, vector<chanson_t>, vector<chanson_t> &);
@@ -540,8 +565,17 @@ void trier(vector<chanson_t> chansons, string critereTri)
         // tri fusion recursif sur la deuxieme liste
         trier(liste2, critereTri);
         
-        // regroupement des deux listes
-        regrouper(liste1, liste2, listeSortie);
+        if (critereTri == TITRE)
+        {
+            // regroupement des deux listes selon le titre
+            regrouper(liste1, liste2, listeSortie);
+        }
+        else if (critereTri == INTERPRETE)
+        {
+            // regroupement des deux listes selon l'interprete
+            regrouper(liste1, liste2, listeSortie);
+        }
+        
     }
     
     chansons = listeSortie;
