@@ -49,6 +49,7 @@ int main()
 {
     // Declaration des fonctions prototype
     void init(vector<chanson_t> &); // init temporaire pour les tests
+    void ajouter(vector<chanson_t> &);
     void afficher(vector<chanson_t> &);
     void retirer(vector<chanson_t> &);
     void mixer(vector<chanson_t> &);
@@ -57,6 +58,7 @@ int main()
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
     void trier(vector<chanson_t>, string);
+    void test();
     
     // Declaration des constantes
     const string CMD_FIN = "fin";
@@ -102,6 +104,7 @@ int main()
         // Ajout d'une chanson a la liste
         else if (commande == CMD_AJOUTER)
         {
+            ajouter(chansons);
         }
         // Suppression d'une chanson
         else if (commande == CMD_RETIRER)
@@ -142,7 +145,7 @@ int main()
         }
         
         // Lecture de la commande de l'utilisateur
-        cout << "Veuilez entrer une commande a executer : ";
+        cout << endl << "Veuilez entrer une commande a executer : ";
         cin >> commande;
         
     }
@@ -176,8 +179,8 @@ void init(vector<chanson_t> &chansons)
         "Aerosmith"
     };
     string chansonsAttributs[NB_CHANSONS] = {
-        "1",
-        "2"
+        "originale",
+        "originale"
     };
     string chansonsDates[NB_CHANSONS] = {
         "03102014",
@@ -213,51 +216,122 @@ void init(vector<chanson_t> &chansons)
 }
 
 /** ----------------------------------------------------------------------
+ \brief Ce module permet d'ajouter une chanson à la liste.
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
+ contient maintenant un element de plus, soit la chanson ajoutee)
+ ----------------------------------------------------------------------- **/
+void ajouter(vector<chanson_t> &chansons)
+{
+    
+    // Declaration des constantes
+    const string ATTRIBUT = "originale";
+    
+    // Declaration des variables
+    string titre;
+    string interprete;
+    string nomFichier;
+    date_t date;
+    int jour;
+    int mois;
+    int annee;
+    chanson_t chanson;
+    
+    // Lecture des informations
+    cout << "Titre de la chanson : ";
+    cin >> titre;
+    cout << "Interprete de la chanson : ";
+    cin >> interprete;
+    cout << "Nom du fichier : ";
+    cin >> nomFichier;
+    cout << "Date d'enregistrement..." << endl;
+    cout << "Jour : ";
+    cin >> jour;
+    cout << "Mois : ";
+    cin >> mois;
+    cout << "Annee : ";
+    cin >> annee;
+    
+    setDate(date, jour, mois, annee);
+    
+    // Initialistion de la chanson
+    init(chanson);
+    
+    // Modification des parametres de la chanson
+    chanson.titre = titre;
+    chanson.interprete = interprete;
+    chanson.fichier = nomFichier;
+    chanson.dateEnregistrement = date;
+    chanson.attribut = ATTRIBUT;
+    
+    // Ajout de la chanson dans la liste
+    chansons.push_back(chanson);
+    
+}
+
+/** ----------------------------------------------------------------------
  \brief Ce module permet d'afficher la liste des chansons triees dans un
  ordre specifie.
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur
  ----------------------------------------------------------------------- **/
 void afficher(vector<chanson_t> &chansons)
 {
     // Declaration des fonctions prototypes
     void trier(vector<chanson_t> &, string);
     
+    const int MIN_CHANSONS = 0;
+    
     // Declaration des vaariables
-    bool veuxTrier;
+    string veuxTrier;
     string critereTri;
     
-    cout << "--------------------------------------- " << endl;
-    cout << "-- L i s t e  d e s  c h a n s o n s --" << endl;
-    cout << "--------------------------------------- " << endl;
-    
-    // Est-ce que l'utilisateur veut trier la liste
-    cout << "Voulez-vous trier la liste ? [" + OUI + "/" + NON + "]";
-    cin >> veuxTrier;
-    
-    // L'utilisateur veux trier la liste
-    if (veuxTrier)
+    if (chansons.size() > MIN_CHANSONS)
     {
-        // Critere de tri
-        cout << "Dans quel ordre voulez-vous trier la liste ? [" + TITRE + "/" + INTERPRETE + "]";
-        cin >> critereTri;
+        // Est-ce que l'utilisateur veut trier la liste
+        cout << "Voulez-vous trier la liste ? [" + OUI + "/" + NON + "] : ";
+        cin >> veuxTrier;
         
-        // Tri de la liste
-        trier(chansons, critereTri);
+        // L'utilisateur veux trier la liste
+        if (veuxTrier == OUI)
+        {
+            // Critere de tri
+            cout << "Dans quel ordre voulez-vous trier la liste ? [" + TITRE + "/" + INTERPRETE + "] : ";
+            cin >> critereTri;
+            
+            // Tri de la liste
+            trier(chansons, critereTri);
+        }
+        
+        cout << endl;
+        cout << "--------------------------------------- " << endl;
+        cout << "-- L i s t e  d e s  c h a n s o n s --" << endl;
+        cout << "--------------------------------------- " << endl;
+        
+        // Pour chaque chanson
+        for (int i = 0; i < chansons.size(); i++)
+        {
+            cout << "-------------------- " << endl;
+            cout << "-- Chanson " << i << endl;
+            cout << "-------------------- " << endl;
+            
+            // Affichage des informations
+            cout << toString(chansons.at(i)) << endl;
+        }
     }
-    
-    // Pour chaque chanson
-    for (int i = 0; i < chansons.size(); i++)
+    else
     {
-        cout << "-------------------- " << endl;
-        cout << "-- Chanson " << i << endl;
-        cout << "-------------------- " << endl;
-        
-        // Affichage des informations
-        cout << toString(chansons.at(i)) << endl;
+        cout << "La liste ne contient aucune chanson" << endl;
     }
 }
 
 /** ----------------------------------------------------------------------
  \brief Recupere et retourne une chanson parmi la liste des chansons
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [in] veuxAfficher : Indique si on doit demande a l'utilisateur
+ d'afficher la liste ou non
+ \param [out] chansons : Liste des chansons contenus dans le mixeur
+ \return indice : indice de la chanson
  ----------------------------------------------------------------------- **/
 int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
 {
@@ -269,10 +343,10 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
     int indice;
     
     // Si parametre veuxAfficher est a vrai, on demande a l'utilisateur s'il veux
-    // voir la liste des chanons
+    // voir la liste des chansons
     if (veuxAfficher)
     {
-        cout << "Souhaitez-vous voir la liste des chansons ? [" + OUI + "/" + NON + "] ";
+        cout << "Souhaitez-vous voir la liste des chansons ? [" + OUI + "/" + NON + "] : ";
         cin >> reponse;
         
         // Lutilisateur veux voir la liste de chansons
@@ -292,6 +366,9 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
 
 /** ----------------------------------------------------------------------
  \brief Cette operation permet de retirer une chanson de la liste.
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
+ contient maintenant un element de moins, soit la chanson retiree)
  ----------------------------------------------------------------------- **/
 void retirer(vector<chanson_t> &chansons)
 {
@@ -306,9 +383,11 @@ void retirer(vector<chanson_t> &chansons)
 }
 
 /** ----------------------------------------------------------------------
- FONCTION SEMI FOURNISE
  \brief Cette operation permet de creer (ajouter) une nouvelle chanson
  par le mixage de deux chansons deja presentes dans la liste
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
+ contient maintenant un element de plus, soit la chanson mixee)
  ----------------------------------------------------------------------- **/
 void mixer(vector<chanson_t> &chansons)
 {
@@ -366,6 +445,9 @@ void mixer(vector<chanson_t> &chansons)
 /** ----------------------------------------------------------------------
  \brief Cette operation permet de creer une nouvelle chanson a partir
  d'une chanson deja presente dans la liste en enlevant la voix.
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
+ contient maintenant un element de plus, soit la chanson sans parole)
  ----------------------------------------------------------------------- **/
 void karaoke(vector<chanson_t> &chansons)
 {
@@ -411,10 +493,12 @@ void karaoke(vector<chanson_t> &chansons)
     
 }
 
-/** ----------------------------------------------------------------------
- FONCTION SEMI FOURNISE
+/** ---------------------------------------------------------------------
  \brief Cette fonction permet de creer une nouvelle chanson a partir
  d'une chanson deja presente dans la liste en ajoutant un effet d'echo
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
+ contient maintenant un element de plus, soit la chanson avec le mode echo)
  ----------------------------------------------------------------------- **/
 void echo(vector<chanson_t> &chansons)
 {
@@ -464,10 +548,12 @@ void echo(vector<chanson_t> &chansons)
 }
 
 /** ----------------------------------------------------------------------
- FONCTION SEMI FOURNISE
  \brief Cette operation permet de creer une nouvelle chanson a partir
  d'une chanson deja presente dans la liste en accelerant le rythme de
  la chanson.
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
+ contient maintenant un element de plus, soit la chanson acceleree)
  ----------------------------------------------------------------------- **/
 void accelerer(vector<chanson_t> &chansons)
 {
@@ -503,6 +589,9 @@ void accelerer(vector<chanson_t> &chansons)
 /** ----------------------------------------------------------------------
  \brief Ce module permet de creer une nouvelle chanson a partir d'une
  chanson deja presente dans la liste en ralentissant le rythme de la chanson
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
+ contient maintenant un element de plus, soit la chanson ralentie)
  ----------------------------------------------------------------------- **/
 void ralentir(vector<chanson_t> &chansons)
 {
@@ -538,6 +627,10 @@ void ralentir(vector<chanson_t> &chansons)
 /** ----------------------------------------------------------------------
  \brief Ce module permet de trier la liste des chansons dans un ordre
  specifie.
+ \param [in] chansons : Liste des chansons contenus dans le mixeur
+ \param [in] critereTri : Critere de tri (titre ou interprete)
+ \param [out] chansons : Liste des chansons contenus dans le mixeur triee selon
+ le critere de tri
  ----------------------------------------------------------------------- **/
 void trier(vector<chanson_t> &chansons, string critereTri)
 {
@@ -583,6 +676,10 @@ void trier(vector<chanson_t> &chansons, string critereTri)
 
 /** ----------------------------------------------------------------------
  \brief Ce module permet de regrouper deux listes
+ \param [in] liste1 : Premiere liste de chansons a regrouper
+ \param [in] liste2 : Deuxieme liste de chansons a regrouper
+ \param [in] listeRegroupee : Liste de chansons regroupee
+ \param [out] listeRegroupee : Liste de chansons regroupee
  ----------------------------------------------------------------------- **/
 void regrouper(vector<chanson_t> liste1, vector<chanson_t> liste2, vector<chanson_t> &listeRegroupee) {
     
