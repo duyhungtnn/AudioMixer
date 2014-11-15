@@ -57,8 +57,6 @@ int main()
     void ralentir(vector<chanson_t> &);
     void echo(vector<chanson_t> &);
     void karaoke(vector<chanson_t> &);
-    void trier(vector<chanson_t>, string);
-    void test();
     
     // Declaration des constantes
     const string CMD_FIN = "fin";
@@ -158,9 +156,6 @@ int main()
  Fonction d'initialisation pour les tests. non pertinent pour la remise
  finale!!
  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
- 
- \brief Ce programme est le module principal. Il sert a modifier des
- pistes audio
  ----------------------------------------------------------------------- **/
 void init(vector<chanson_t> &chansons)
 {
@@ -179,8 +174,12 @@ void init(vector<chanson_t> &chansons)
         "Aerosmith"
     };
     string chansonsAttributs[NB_CHANSONS] = {
-        "originale",
-        "originale"
+        "0",
+        "1"
+    };
+    int chansonsNbCopies[NB_CHANSONS] = {
+        1,
+        0
     };
     string chansonsDates[NB_CHANSONS] = {
         "03102014",
@@ -198,6 +197,7 @@ void init(vector<chanson_t> &chansons)
         uneChanson.interprete = chansonsInterpretes[i];
         uneChanson.attribut = chansonsAttributs[i];
         uneChanson.originale = true;
+        uneChanson.nbCopies = chansonsNbCopies[i];
         
         // Generation de la date
         date_t date;
@@ -208,7 +208,6 @@ void init(vector<chanson_t> &chansons)
                 stoi(chansonsDates[i].substr(4,4)));
         
         uneChanson.dateEnregistrement = date;
-        uneChanson.nbCopies = 0;
         
         // Ajout de la chansons
         chansons.push_back(uneChanson);
@@ -252,6 +251,7 @@ void ajouter(vector<chanson_t> &chansons)
     cout << "Annee : ";
     cin >> annee;
     
+    // Attribution de la date
     setDate(date, jour, mois, annee);
     
     // Initialistion de la chanson
@@ -278,14 +278,17 @@ void ajouter(vector<chanson_t> &chansons)
 void afficher(vector<chanson_t> &chansons)
 {
     // Declaration des fonctions prototypes
-    void trier(vector<chanson_t> &, string);
+    vector<chanson_t> trier(vector<chanson_t>, string);
     
+    // Declaration des constantes
     const int MIN_CHANSONS = 0;
     
     // Declaration des vaariables
     string veuxTrier;
     string critereTri;
+    vector<chanson_t> listeAffichage;
     
+    // S'il y a au moins une chanson dans la liste
     if (chansons.size() > MIN_CHANSONS)
     {
         // Est-ce que l'utilisateur veut trier la liste
@@ -299,8 +302,14 @@ void afficher(vector<chanson_t> &chansons)
             cout << "Dans quel ordre voulez-vous trier la liste ? [" + TITRE + "/" + INTERPRETE + "] : ";
             cin >> critereTri;
             
-            // Tri de la liste
-            trier(chansons, critereTri);
+            // Triage et recuperation de la liste pour affichahe
+            listeAffichage = trier(chansons, critereTri);
+        }
+        // L'utilisateur ne veux pas trier la liste
+        else
+        {
+            // On affiche les informations de la liste de base
+            listeAffichage = chansons;
         }
         
         cout << endl;
@@ -309,16 +318,17 @@ void afficher(vector<chanson_t> &chansons)
         cout << "--------------------------------------- " << endl;
         
         // Pour chaque chanson
-        for (int i = 0; i < chansons.size(); i++)
+        for (int i = 0; i < listeAffichage.size(); i++)
         {
             cout << "-------------------- " << endl;
             cout << "-- Chanson " << i << endl;
             cout << "-------------------- " << endl;
             
             // Affichage des informations
-            cout << toString(chansons.at(i)) << endl;
+            cout << toString(listeAffichage.at(i)) << endl;
         }
     }
+    // La liste de chanons est vide !
     else
     {
         cout << "La liste ne contient aucune chanson" << endl;
@@ -629,13 +639,14 @@ void ralentir(vector<chanson_t> &chansons)
  specifie.
  \param [in] chansons : Liste des chansons contenus dans le mixeur
  \param [in] critereTri : Critere de tri (titre ou interprete)
- \param [out] chansons : Liste des chansons contenus dans le mixeur triee selon
+ \return listeSortie : Liste des chansons contenus dans le mixeur triee selon
  le critere de tri
  ----------------------------------------------------------------------- **/
-void trier(vector<chanson_t> &chansons, string critereTri)
+vector<chanson_t> trier(vector<chanson_t> chansons, string critereTri)
 {
     // Declaration des fonctions prototypes
-    void regrouper(vector<chanson_t>, vector<chanson_t>, vector<chanson_t> &);
+    void regrouperTitre(vector<chanson_t> &, vector<chanson_t> &, vector<chanson_t> &);
+    void regrouperInterprete(vector<chanson_t> &, vector<chanson_t> &, vector<chanson_t> &);
     
     // Declaration des constantes
     const int LONGEUR_MINIMALE = 1;
@@ -661,17 +672,17 @@ void trier(vector<chanson_t> &chansons, string critereTri)
         if (critereTri == TITRE)
         {
             // regroupement des deux listes selon le titre
-            regrouper(liste1, liste2, listeSortie);
+            regrouperTitre(liste1, liste2, listeSortie);
         }
         else if (critereTri == INTERPRETE)
         {
             // regroupement des deux listes selon l'interprete
-            regrouper(liste1, liste2, listeSortie);
+            regrouperInterprete(liste1, liste2, listeSortie);
         }
         
     }
     
-    chansons = listeSortie;
+    return listeSortie;
 }
 
 /** ----------------------------------------------------------------------
@@ -681,7 +692,53 @@ void trier(vector<chanson_t> &chansons, string critereTri)
  \param [in] listeRegroupee : Liste de chansons regroupee
  \param [out] listeRegroupee : Liste de chansons regroupee
  ----------------------------------------------------------------------- **/
-void regrouper(vector<chanson_t> liste1, vector<chanson_t> liste2, vector<chanson_t> &listeRegroupee) {
+void regrouperTitre(vector<chanson_t> &liste1, vector<chanson_t> &liste2, vector<chanson_t> &listeRegroupee) {
+    
+    // → tant qu'une des listes n'est pas vide
+    while ( liste1.size() > 0 && liste2.size() > 0 )
+    {
+        // → on compare les elements courants des deux listes
+        // → on choisit le plus petit element
+        // → on le copie dans la liste de sortie
+        if ( liste1.front().titre < liste2.front().titre )
+        {
+            listeRegroupee.push_back(liste1.front());
+            liste1.erase(liste1.begin()); // → on avance dans la liste contenant le plus petit element
+        }
+        else
+        {
+            listeRegroupee.push_back(liste2.front());
+            liste2.erase(liste2.begin()); // → on avance dans la liste contenant le plus petit element
+        }
+    }
+    
+    // → on copie les elements restant de la liste non vide dans la liste de sortie pour obtenir une liste triee
+    if (liste1.size() > 0)
+    {
+        for (int i = 0; i < liste1.size(); i++)
+        {
+            listeRegroupee.push_back(liste1.front());
+            liste1.erase(liste1.begin());
+        }
+    }
+    else if (liste2.size() > 0)
+    {
+        for (int i = 0; i < liste2.size(); i++)
+        {
+            listeRegroupee.push_back(liste2.front());
+            liste2.erase(liste2.begin());
+        }
+    }
+}
+
+/** ----------------------------------------------------------------------
+ \brief Ce module permet de regrouper deux listes
+ \param [in] liste1 : Premiere liste de chansons a regrouper
+ \param [in] liste2 : Deuxieme liste de chansons a regrouper
+ \param [in] listeRegroupee : Liste de chansons regroupee
+ \param [out] listeRegroupee : Liste de chansons regroupee
+ ----------------------------------------------------------------------- **/
+void regrouperInterprete(vector<chanson_t> &liste1, vector<chanson_t> &liste2, vector<chanson_t> &listeRegroupee) {
     
     void afficher(vector<chanson_t> &);
     
@@ -691,7 +748,7 @@ void regrouper(vector<chanson_t> liste1, vector<chanson_t> liste2, vector<chanso
         // → on compare les elements courants des deux listes
         // → on choisit le plus petit element
         // → on le copie dans la liste de sortie
-        if ( liste1.front().attribut > liste2.front().attribut )
+        if ( liste1.front().interprete < liste2.front().interprete )
         {
             listeRegroupee.push_back(liste1.front());
             liste1.erase(liste1.begin()); // → on avance dans la liste contenant le plus petit element
