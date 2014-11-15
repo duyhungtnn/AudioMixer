@@ -19,6 +19,3 @@ Pour l'execution des tests, les fichiers .WAV suivant sont nécessaires
 
 [mamakin.wav]:http://info.usherbrooke.ca/GabrielGirard/cours/ift-159-analyse-et-programmation/devoirs/devoir-5/executables-et-fichier-test/sous-repertaoire-wav-pour-les-tests/mamakin.wav/at_download/file
 [trainkept.wav]:http://info.usherbrooke.ca/GabrielGirard/cours/ift-159-analyse-et-programmation/devoirs/devoir-5/executables-et-fichier-test/sous-repertaoire-wav-pour-les-tests/trainkept.wav/at_download/file
-
-### Todos
-- Implementation du tri fusion
