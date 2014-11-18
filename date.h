@@ -16,12 +16,12 @@ using namespace std;
 struct date_t
 {
     int jour;
-    int mois;
+    string mois;
     int annee;
 };
 
 void init(date_t &);
-void setDate(date_t &, int, int, int);
+void setDate(date_t &, int, string, int);
 string dateToString(date_t);
 
 #endif /* defined(__DATE_H__) */

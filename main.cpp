@@ -40,6 +40,7 @@ const string TITRE = "titre";
 const string INTERPRETE = "interprete";
 const string OUI = "oui";
 const string NON = "non";
+const string TRAIN = ">> ";
 
 /** ----------------------------------------------------------------------
  \brief Ce programme est le module principal. Il sert a modifier des
@@ -75,6 +76,7 @@ int main()
     // Lecture de la commande de l'utilisateur
     cout << "Veuilez entrer une commande a executer : ";
     cin >> commande;
+    cout << TRAIN << commande << endl; // Train
     
     while (commande != CMD_FIN) {
         // Lecteur d'une chanson
@@ -87,9 +89,11 @@ int main()
             // Lecture des informations
             cout << "Veuillez entrer le nom du fichier : ";
             cin >> nomFicher;
+            cout << TRAIN << nomFicher << endl; // Train
             
             cout << "Veuillez entrer la duree de lecture : ";
             cin >> duree;
+            cout << TRAIN << duree << endl; // Train
             
             // Lecture de la chanson
             jouerMusique(nomFicher, duree);
@@ -145,6 +149,8 @@ int main()
         // Lecture de la commande de l'utilisateur
         cout << endl << "Veuilez entrer une commande a executer : ";
         cin >> commande;
+        cout << TRAIN << commande << endl; // Train
+
         
     }
     
@@ -182,8 +188,8 @@ void init(vector<chanson_t> &chansons)
         0
     };
     string chansonsDates[NB_CHANSONS] = {
-        "03102014",
-        "14102014"
+        "03jan2014",
+        "14nov2014"
     };
     
     chanson_t uneChanson;
@@ -204,8 +210,8 @@ void init(vector<chanson_t> &chansons)
         init(date);
         
         setDate(date, stoi(chansonsDates[i].substr(0,2)),
-                stoi(chansonsDates[i].substr(2,2)),
-                stoi(chansonsDates[i].substr(4,4)));
+                chansonsDates[i].substr(2,3),
+                stoi(chansonsDates[i].substr(5,4)));
         
         uneChanson.dateEnregistrement = date;
         
@@ -230,29 +236,31 @@ void ajouter(vector<chanson_t> &chansons)
     string titre;
     string interprete;
     string nomFichier;
-    date_t date;
     int jour;
-    int mois;
+    string mois;
     int annee;
     chanson_t chanson;
     
     // Lecture des informations
     cout << "Titre de la chanson : ";
     cin >> titre;
+    cout << TRAIN << titre << endl; // Train
     cout << "Interprete de la chanson : ";
     cin >> interprete;
+    cout << TRAIN << interprete << endl; // Train
     cout << "Nom du fichier : ";
     cin >> nomFichier;
+    cout << TRAIN << nomFichier << endl; // Train
     cout << "Date d'enregistrement..." << endl;
     cout << "Jour : ";
     cin >> jour;
+    cout << TRAIN << jour << endl; // Train
     cout << "Mois : ";
     cin >> mois;
+    cout << TRAIN << mois << endl; // Train
     cout << "Annee : ";
     cin >> annee;
-    
-    // Attribution de la date
-    setDate(date, jour, mois, annee);
+    cout << TRAIN << annee << endl; // Train
     
     // Initialistion de la chanson
     init(chanson);
@@ -261,7 +269,8 @@ void ajouter(vector<chanson_t> &chansons)
     chanson.titre = titre;
     chanson.interprete = interprete;
     chanson.fichier = nomFichier;
-    chanson.dateEnregistrement = date;
+    // Attribution de la date
+    setDate(chanson.dateEnregistrement, jour, mois, annee);
     chanson.attribut = ATTRIBUT;
     
     // Ajout de la chanson dans la liste
@@ -294,13 +303,15 @@ void afficher(vector<chanson_t> &chansons)
         // Est-ce que l'utilisateur veut trier la liste
         cout << "Voulez-vous trier la liste ? [" + OUI + "/" + NON + "] : ";
         cin >> veuxTrier;
-        
+        cout << TRAIN << veuxTrier << endl; // Train
+
         // L'utilisateur veux trier la liste
         if (veuxTrier == OUI)
         {
             // Critere de tri
             cout << "Dans quel ordre voulez-vous trier la liste ? [" + TITRE + "/" + INTERPRETE + "] : ";
             cin >> critereTri;
+            cout << TRAIN << critereTri << endl; // Train
             
             // Triage et recuperation de la liste pour affichahe
             listeAffichage = trier(chansons, critereTri);
@@ -358,7 +369,8 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
     {
         cout << "Souhaitez-vous voir la liste des chansons ? [" + OUI + "/" + NON + "] : ";
         cin >> reponse;
-        
+        cout << TRAIN << reponse << endl; // Train
+
         // Lutilisateur veux voir la liste de chansons
         if (reponse == OUI)
         {
@@ -370,6 +382,7 @@ int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
     // Obtention de l'indice de la chanson
     cout << "Entrez le numero de la chanson choisie : ";
     cin >> indice;
+    cout << TRAIN << indice << endl; // Train
     
     return indice;
 }
@@ -580,6 +593,7 @@ void accelerer(vector<chanson_t> &chansons)
     // Lecture du facteur d'acceleration
     cout << "Veuillez entrer le facteur d'acceleration : ";
     cin >> facteur;
+    cout << TRAIN << facteur << endl; // Train
     
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));
@@ -618,6 +632,7 @@ void ralentir(vector<chanson_t> &chansons)
     // Lecture du facteur d'acceleration
     cout << "Veuillez entrer le facteur de ralentissement : ";
     cin >> facteur;
+    cout << TRAIN << facteur << endl; // Train
     
     // Creation de la nouvelle chanson
     chansons.push_back(chansons.at(indice));

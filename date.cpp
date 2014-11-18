@@ -13,7 +13,7 @@ using namespace std;
 void init(date_t &date)
 {
     const int INIT_JOUR = 1;
-    const int INIT_MOIS = 1;
+    const string INIT_MOIS = "janvier";
     const int INIT_ANNEE = 1970;
     
     date.jour = INIT_JOUR;
@@ -21,16 +21,16 @@ void init(date_t &date)
     date.annee = INIT_ANNEE;
 }
 
-void setDate(date_t &date, int jour, int mois, int annee)
+void setDate(date_t &date, int jour, string mois, int annee)
 {
     date.jour = jour;
     date.mois = mois;
     date.annee = annee;
 }
 
-std::string dateToString(date_t date)
+string dateToString(date_t date)
 {
-    std::string toString = to_string(date.jour) + " " + to_string(date.mois) + " " + to_string(date.annee);
+    string toString = to_string(date.jour) + " " + date.mois + " " + to_string(date.annee);
     
     return toString;
 }
