@@ -734,7 +734,7 @@ void regrouperTitre(vector<chanson_t> liste1, vector<chanson_t> liste2, vector<c
     {
         while(liste2.size() > 0)
         {
-            listeRegroupee.push_back(liste2.at(0));
+            listeRegroupee.push_back(liste2.front());
             liste2.erase(liste2.begin());
         }
     }
@@ -742,7 +742,7 @@ void regrouperTitre(vector<chanson_t> liste1, vector<chanson_t> liste2, vector<c
     {
         while(liste1.size() > 0)
         {
-            listeRegroupee.push_back(liste1.at(0));
+            listeRegroupee.push_back(liste1.front());
             liste1.erase(liste1.begin());
         }
     }
@@ -779,7 +779,7 @@ void regrouperInterprete(vector<chanson_t> liste1, vector<chanson_t> liste2, vec
     {
         while(liste2.size() > 0)
         {
-            listeRegroupee.push_back(liste2.at(0));
+            listeRegroupee.push_back(liste2.front());
             liste2.erase(liste2.begin());
         }
     }
@@ -787,7 +787,7 @@ void regrouperInterprete(vector<chanson_t> liste1, vector<chanson_t> liste2, vec
     {
         while(liste1.size() > 0)
         {
-            listeRegroupee.push_back(liste1.at(0));
+            listeRegroupee.push_back(liste1.front());
             liste1.erase(liste1.begin());
         }
     }
