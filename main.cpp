@@ -48,7 +48,6 @@ const string TRAIN = ">> ";
 int main()
 {
     // Declaration des fonctions prototype
-    void init(vector<chanson_t> &); // init temporaire pour les tests
     void ajouter(vector<chanson_t> &);
     void afficher(vector<chanson_t> &);
     void retirer(vector<chanson_t> &);
