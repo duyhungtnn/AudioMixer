@@ -14,6 +14,12 @@
  - Acceleration («accelerer»)
  - Ralentissement («ralentir»).
  - Terminer «fin» permet de terminer l'execution du programme.
+ <b>Entrees:</b>
+ \li (\c clavier) commande - liste de commande (\ Chaine de caracteres)
+ \li (\c fichier) fichier - fichiers de musique en format wav (\c fichier)
+ 
+ <b>Sorties:</b>
+ \li (\c fichier) fichier - fichiers de musique en format wav (\c fichier)
  *****************************************************************/
 
 #include <iostream>
@@ -73,7 +79,8 @@ int main()
     cin >> commande;
     cout << TRAIN << commande << endl; // Train
     
-    while (commande != CMD_FIN) {
+    while (commande != CMD_FIN)
+    {
         // Lecteur d'une chanson
         if (commande == CMD_JOUER)
         {
@@ -154,7 +161,6 @@ int main()
 /** ----------------------------------------------------------------------
  \brief Ce module permet d'ajouter une chanson à la liste.
  \param [in] chansons : Liste des chansons contenus dans le mixeur
- \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
  contient maintenant un element de plus, soit la chanson ajoutee)
  ----------------------------------------------------------------------- **/
 void ajouter(vector<chanson_t> &chansons)
@@ -276,7 +282,6 @@ void afficher(vector<chanson_t> &chansons)
  \param [in] chansons : Liste des chansons contenus dans le mixeur
  \param [in] veuxAfficher : Indique si on doit demande a l'utilisateur
  d'afficher la liste ou non
- \param [out] chansons : Liste des chansons contenus dans le mixeur
  \return indice : indice de la chanson
  ----------------------------------------------------------------------- **/
 int obtenirChanson(vector<chanson_t> &chansons, bool veuxAfficher)
