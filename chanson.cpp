@@ -12,7 +12,12 @@
 
 using namespace std;
 
-void init(chanson_t &Chanson)
+/** ----------------------------------------------------------------------
+ \brief Fonction permettant d'initialiser la chanson
+ \param [in] chanson : chanson de type chanson_t
+ \param [out] chanson : chanson initialisee
+ ----------------------------------------------------------------------- **/
+void init(chanson_t &chanson)
 {
 
     // Initialisation de la date
@@ -20,16 +25,21 @@ void init(chanson_t &Chanson)
     init(date);
     
     // Initialisation des attributs
-    Chanson.titre = "";
-    Chanson.interprete = "";
-    Chanson.fichier = "";
-    Chanson.attribut = "";
-    Chanson.dateEnregistrement = date;
-    Chanson.originale = true;
-    Chanson.nbCopies = 0;
-    Chanson.musiqueWav = MusiqueWAV();
+    chanson.titre = "";
+    chanson.interprete = "";
+    chanson.fichier = "";
+    chanson.attribut = "";
+    chanson.dateEnregistrement = date;
+    chanson.originale = true;
+    chanson.nbCopies = 0;
+    chanson.musiqueWav = MusiqueWAV();
 }
 
+/** ----------------------------------------------------------------------
+ \brief Fonction retournant une chanson au format de chaîne de caracteres
+ \param [in] chanson : chanson de type chanson_t
+ \return : chanson au format chaaîne de caracteres
+ ----------------------------------------------------------------------- **/
 string toString(chanson_t Chanson)
 {
     
@@ -50,6 +60,12 @@ string toString(chanson_t Chanson)
     return toString;
 }
 
+/** ----------------------------------------------------------------------
+ \brief Fonction retournant le prochain numero d'une chanson au format de 
+ chaîne de caracteres
+ \param [in] nbCopie : Numero courant de la copie
+ \return numero de la prochaine version au format chaine de caracteres
+ ----------------------------------------------------------------------- **/
 string recupererProchaineVersion(int nbCopies)
 {
     return to_string(++nbCopies);

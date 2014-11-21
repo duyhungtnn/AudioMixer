@@ -69,9 +69,6 @@ int main()
     vector<chanson_t> chansons;
     string commande;
     
-    // Initialisation temporaire de la liste des chansons
-    init(chansons);
-    
     // Lecture de la commande de l'utilisateur
     cout << "Veuilez entrer une commande a executer : ";
     cin >> commande;
@@ -156,81 +153,6 @@ int main()
 }
 
 /** ----------------------------------------------------------------------
- \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
- Fonction d'initialisation pour les tests. non pertinent pour la remise
- finale!!
- \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
- ----------------------------------------------------------------------- **/
-void init(vector<chanson_t> &chansons)
-{
-    const int NB_CHANSONS = 4;
-    
-    string chansonsFichiers[NB_CHANSONS] = {
-        "mamakin.wav",
-        "trainkept.wav",
-        "a",
-        "b"
-    };
-    string chansonsTitres[NB_CHANSONS] = {
-        "w",
-        "c",
-        "b",
-        "a"
-    };
-    string chansonsInterpretes[NB_CHANSONS] = {
-        "Aerosmith",
-        "Aerosmith",
-        "Aerosmith",
-        "Aerosmith"
-    };
-    string chansonsAttributs[NB_CHANSONS] = {
-        "original",
-        "original",
-        "original",
-        "original"
-    };
-    int chansonsNbCopies[NB_CHANSONS] = {
-        0,
-        0,
-        0,
-        0
-    };
-    string chansonsDates[NB_CHANSONS] = {
-        "03jan2014",
-        "14nov2014",
-        "14nov2014",
-        "14nov2014"
-    };
-    
-    chanson_t uneChanson;
-    
-    // Ajoute NB_CHANSONS a la liste de chansons
-    for (int i = 0; i < NB_CHANSONS; i++)
-    {
-        // Creation de la chanson
-        uneChanson.fichier = chansonsFichiers[i];
-        uneChanson.titre = chansonsTitres[i];
-        uneChanson.interprete = chansonsInterpretes[i];
-        uneChanson.attribut = chansonsAttributs[i];
-        uneChanson.originale = true;
-        uneChanson.nbCopies = chansonsNbCopies[i];
-        
-        // Generation de la date
-        date_t date;
-        init(date);
-        
-        setDate(date, stoi(chansonsDates[i].substr(0,2)),
-                chansonsDates[i].substr(2,3),
-                stoi(chansonsDates[i].substr(5,4)));
-        
-        uneChanson.dateEnregistrement = date;
-        
-        // Ajout de la chansons
-        chansons.push_back(uneChanson);
-    }
-}
-
-/** ----------------------------------------------------------------------
  \brief Ce module permet d'ajouter une chanson à la liste.
  \param [in] chansons : Liste des chansons contenus dans le mixeur
  \param [out] chansons : Liste des chansons contenus dans le mixeur (cette liste
@@ -246,8 +168,8 @@ void ajouter(vector<chanson_t> &chansons)
     string titre;
     string interprete;
     string nomFichier;
-    int jour;
     string mois;
+    int jour;
     int annee;
     chanson_t chanson;
     

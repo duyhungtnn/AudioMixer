@@ -8,11 +8,13 @@
 #ifndef __DATE_H__
 #define __DATE_H__
 
-#include <stdio.h>
 #include <string>
 
 using namespace std;
 
+/** ----------------------------------------------------------------------
+ \brief Definition de la structure date_t
+ ----------------------------------------------------------------------- **/
 struct date_t
 {
     int jour;

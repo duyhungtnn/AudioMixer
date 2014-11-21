@@ -8,12 +8,13 @@
 #ifndef __CHANSON_H__
 #define __CHANSON_H__
 
-#include <stdio.h>
-
 #include "date.h"
 #include "vlc/vlc.h"
 #include "wav.h"
 
+/** ----------------------------------------------------------------------
+ \brief Definition de la structure chanson_t
+ ----------------------------------------------------------------------- **/
 struct chanson_t
 {
     string titre;
